@@ -6,3 +6,5 @@ export const createSweetSchema = z.object({
   price: z.number().nonnegative(),
   quantity: z.number().int().nonnegative(),
 });
+
+export const updateSweetSchema = createSweetSchema;
