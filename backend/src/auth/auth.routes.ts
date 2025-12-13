@@ -8,7 +8,14 @@ export const authRouter = Router();
 authRouter.post("/register", async (req, res, next) => {
   try {
     const parsed = registerSchema.safeParse(req.body);
-    if (!parsed.success) throw new HttpError(400, "Invalid request body");
+    if (!parsed.success) {
+      const errors = parsed.error.errors.map(e => {
+        if (e.path[0] === "email") return "Invalid email format";
+        if (e.path[0] === "password") return "Password must be at least 8 characters";
+        return e.message;
+      });
+      throw new HttpError(400, errors.join(", "));
+    }
 
     const result = await authService.register(
       parsed.data.email,
@@ -23,7 +30,14 @@ authRouter.post("/register", async (req, res, next) => {
 authRouter.post("/login", async (req, res, next) => {
   try {
     const parsed = loginSchema.safeParse(req.body);
-    if (!parsed.success) throw new HttpError(400, "Invalid request body");
+    if (!parsed.success) {
+      const errors = parsed.error.errors.map(e => {
+        if (e.path[0] === "email") return "Invalid email format";
+        if (e.path[0] === "password") return "Password is required";
+        return e.message;
+      });
+      throw new HttpError(400, errors.join(", "));
+    }
 
     const result = await authService.login(
       parsed.data.email,
