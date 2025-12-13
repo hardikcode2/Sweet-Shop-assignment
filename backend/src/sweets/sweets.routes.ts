@@ -4,6 +4,8 @@ import { createSweetSchema, updateSweetSchema } from "./sweets.schemas";
 import * as sweetsService from "./sweets.service";
 import { HttpError } from "../errors/httpError";
 import * as inventoryService from "./sweets.inventory.service";
+import * as searchService from "./sweets.search.service";
+
 
 export const sweetsRouter = Router();
 
@@ -42,6 +44,31 @@ sweetsRouter.put("/:id", requireAuth, async (req, res, next) => {
     next(err);
   }
 });
+
+/* ---------- SEARCH SWEETS ---------- */
+sweetsRouter.get(
+  "/search",
+  requireAuth,
+  async (req, res, next) => {
+    try {
+      const sweets = await searchService.searchSweets({
+        name: req.query.name as string | undefined,
+        category: req.query.category as string | undefined,
+        minPrice: req.query.minPrice
+          ? Number(req.query.minPrice)
+          : undefined,
+        maxPrice: req.query.maxPrice
+          ? Number(req.query.maxPrice)
+          : undefined,
+      });
+
+      res.status(200).json(sweets);
+    } catch (err) {
+      next(err);
+    }
+  }
+);
+
 
 /* ---------- DELETE SWEET (ADMIN ONLY) ---------- */
 sweetsRouter.delete(
