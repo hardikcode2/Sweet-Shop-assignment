@@ -1,1 +1,1 @@
-# Sweet-Shop-assignment
+This is TDD Kata: Sweet Shop Management System
