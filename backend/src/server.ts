@@ -1,9 +1,16 @@
+import "dotenv/config";
 import { createApp } from "./app";
+import { initDb } from "./db/init";
 
 const PORT = process.env.PORT ? Number(process.env.PORT) : 3000;
 
 const app = createApp();
-app.listen(PORT, () => {
-  // eslint-disable-next-line no-console
-  console.log(`API listening on http://localhost:${PORT}`);
-});
+async function start() {
+  await initDb();
+  app.listen(PORT, () => {
+    console.log(`Server running on ${PORT}`);
+  });
+}
+
+start();
+
