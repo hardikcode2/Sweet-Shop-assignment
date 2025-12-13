@@ -2,6 +2,7 @@ import express from "express";
 import cors from "cors";
 import helmet from "helmet";
 import { authRouter } from "./auth/auth.routes";
+import { sweetsRouter } from "./sweets/sweets.routes";
 import { HttpError } from "./errors/httpError";
 
 export function createApp() {
@@ -16,6 +17,7 @@ export function createApp() {
   );
 
   app.use("/api/auth", authRouter);
+  app.use("/api/sweets", sweetsRouter); // ✅ THIS WAS MISSING
 
   app.use((err: any, _req: any, res: any, _next: any) => {
     if (err instanceof HttpError) {
