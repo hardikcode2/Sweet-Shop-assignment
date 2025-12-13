@@ -13,6 +13,7 @@ type Sweet = {
 
 export default function Sweets() {
   const [sweets, setSweets] = useState<Sweet[]>([]);
+  const [allSweets, setAllSweets] = useState<Sweet[]>([]); // Store all sweets for category list
   const [search, setSearch] = useState("");
   const [searchCategory, setSearchCategory] = useState("");
   const [minPrice, setMinPrice] = useState("");
@@ -42,12 +43,16 @@ export default function Sweets() {
 
   const navigate = useNavigate();
 
+  // Fixed categories list
+  const categories = ["Traditional", "Milk", "Dry"];
+
   async function load() {
     try {
       setLoading(true);
       setError("");
       const res = await api.get("/sweets");
       setSweets(res.data);
+      setAllSweets(res.data); // Store all sweets for category dropdown
     } catch (err: any) {
       setError(err.response?.data?.error || "Failed to load sweets");
       if (err.response?.status === 401) {
@@ -360,12 +365,18 @@ export default function Sweets() {
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4 pt-4 border-t border-gray-200">
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-2">Category</label>
-                <input
-                  className="w-full border border-gray-300 rounded-lg p-3 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent"
-                  placeholder="Filter by category..."
+                <select
+                  className="w-full border border-gray-300 rounded-lg p-3 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent bg-white"
                   value={searchCategory}
                   onChange={(e) => setSearchCategory(e.target.value)}
-                />
+                >
+                  <option value="">All Categories</option>
+                  {categories.map((cat) => (
+                    <option key={cat} value={cat}>
+                      {cat}
+                    </option>
+                  ))}
+                </select>
               </div>
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-2">Min Price (₹)</label>

@@ -1,1 +1,17 @@
 @import "tailwindcss";
+
+/* Hide default cursor - custom cursor component will handle it (only on non-touch devices) */
+@media (hover: hover) and (pointer: fine) {
+  html,
+  body,
+  * {
+    cursor: none !important;
+  }
+
+  /* Show default cursor for disabled elements */
+  button:disabled,
+  input:disabled,
+  [disabled] {
+    cursor: not-allowed !important;
+  }
+}
