@@ -3,9 +3,11 @@ import { requireAuth, requireAdmin } from "../middleware/auth";
 import { createSweetSchema, updateSweetSchema } from "./sweets.schemas";
 import * as sweetsService from "./sweets.service";
 import { HttpError } from "../errors/httpError";
+import * as inventoryService from "./sweets.inventory.service";
 
 export const sweetsRouter = Router();
 
+/* ---------- LIST SWEETS ---------- */
 sweetsRouter.get("/", requireAuth, async (_req, res, next) => {
   try {
     const sweets = await sweetsService.listSweets();
@@ -15,6 +17,7 @@ sweetsRouter.get("/", requireAuth, async (_req, res, next) => {
   }
 });
 
+/* ---------- CREATE SWEET ---------- */
 sweetsRouter.post("/", requireAuth, async (req, res, next) => {
   try {
     const parsed = createSweetSchema.safeParse(req.body);
@@ -27,6 +30,7 @@ sweetsRouter.post("/", requireAuth, async (req, res, next) => {
   }
 });
 
+/* ---------- UPDATE SWEET ---------- */
 sweetsRouter.put("/:id", requireAuth, async (req, res, next) => {
   try {
     const parsed = updateSweetSchema.safeParse(req.body);
@@ -39,6 +43,7 @@ sweetsRouter.put("/:id", requireAuth, async (req, res, next) => {
   }
 });
 
+/* ---------- DELETE SWEET (ADMIN ONLY) ---------- */
 sweetsRouter.delete(
   "/:id",
   requireAuth,
@@ -47,6 +52,43 @@ sweetsRouter.delete(
     try {
       await sweetsService.deleteSweet(req.params.id);
       res.status(204).send();
+    } catch (err) {
+      next(err);
+    }
+  }
+);
+
+/* ---------- PURCHASE SWEET ---------- */
+sweetsRouter.post(
+  "/:id/purchase",
+  requireAuth,
+  async (req, res, next) => {
+    try {
+      const sweet = await inventoryService.purchaseSweet(req.params.id);
+      res.status(200).json(sweet);
+    } catch (err) {
+      next(err);
+    }
+  }
+);
+
+/* ---------- RESTOCK SWEET (ADMIN ONLY) ---------- */
+sweetsRouter.post(
+  "/:id/restock",
+  requireAuth,
+  requireAdmin,
+  async (req, res, next) => {
+    try {
+      const amount = Number(req.body.amount);
+      if (!Number.isInteger(amount)) {
+        throw new HttpError(400, "Invalid restock amount");
+      }
+
+      const sweet = await inventoryService.restockSweet(
+        req.params.id,
+        amount
+      );
+      res.status(200).json(sweet);
     } catch (err) {
       next(err);
     }
