@@ -13,7 +13,6 @@ type Sweet = {
 
 export default function Sweets() {
   const [sweets, setSweets] = useState<Sweet[]>([]);
-  const [allSweets, setAllSweets] = useState<Sweet[]>([]); // Store all sweets for category list
   const [search, setSearch] = useState("");
   const [searchCategory, setSearchCategory] = useState("");
   const [minPrice, setMinPrice] = useState("");
@@ -53,7 +52,6 @@ export default function Sweets() {
       setError("");
       const res = await api.get("/sweets");
       setSweets(res.data);
-      setAllSweets(res.data); // Store all sweets for category dropdown
     } catch (err: any) {
       setError(err.response?.data?.error || "Failed to load sweets");
       if (err.response?.status === 401) {
