@@ -193,6 +193,8 @@ Both AI models acted as highly contributing companions throughout the entire pro
 - Frontend: Vercel
 - PostgreSQL: Render managed DB
 
+The Deployed Link: https://indian-sweet-shop.vercel.app/login
+
 ✅ Status
 
 ✔ Backend complete
