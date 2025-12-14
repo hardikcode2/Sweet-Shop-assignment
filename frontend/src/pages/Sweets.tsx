@@ -732,6 +732,18 @@ export default function Sweets() {
             </div>
           </div>
         )}
+
+        {/* Footer */}
+        <footer className="mt-12 pt-8 pb-6 border-t border-purple-200">
+          <div className="text-center">
+            <p className="text-gray-700 font-medium mb-2">
+              Developed by <span className="text-purple-600 font-semibold">Hardik Chaurasia</span>
+            </p>
+            <p className="text-gray-500 text-sm">
+              © 2025 All rights reserved
+            </p>
+          </div>
+        </footer>
       </div>
     </div>
   );
