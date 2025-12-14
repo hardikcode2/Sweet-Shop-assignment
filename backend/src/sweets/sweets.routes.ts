@@ -36,7 +36,10 @@ sweetsRouter.post("/", requireAuth, async (req, res, next) => {
 sweetsRouter.put("/:id", requireAuth, async (req, res, next) => {
   try {
     const parsed = updateSweetSchema.safeParse(req.body);
-    if (!parsed.success) throw new HttpError(400, "Invalid request body");
+    if (!parsed.success) {
+      const errors = parsed.error.errors.map(e => `${e.path.join('.')}: ${e.message}`).join(', ');
+      throw new HttpError(400, `Invalid request body: ${errors}`);
+    }
 
     const sweet = await sweetsService.updateSweet(req.params.id, parsed.data);
     res.status(200).json(sweet);
